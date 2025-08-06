@@ -209,7 +209,7 @@ function showResults(won, attemptsUsed) {
     console.log("AAAA")
   const emojiGrid = getEmojiGrid(guessFeedbackHistory);
   const totalWordles = 1509; // You can calculate from your start date if needed
-  const scoreLine = `Wordle ${totalWordles} ${won ? attemptsUsed : "X"}/6`;
+  const scoreLine = `Wordle NerdVille© ${totalWordles} ${won ? attemptsUsed : "X"}/6`;
 
   const shareText = `${scoreLine}\n\n${emojiGrid}`;
   console.log(shareText);
