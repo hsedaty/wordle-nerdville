@@ -5,7 +5,8 @@ const keyboard = document.getElementById("keyboard");
 function createBoard() {
   for (let i = 0; i < 6; i++) {
     const row = document.createElement("div");
-    row.className = "row";
+    row.className = "board-row";
+    row.setAttribute("data-row", i);  // i is the row index
     for (let j = 0; j < 5; j++) {
       const tile = document.createElement("div");
       tile.className = "tile";
@@ -115,7 +116,7 @@ const guessFeedbackHistory = []; // array of arrays of "green"/"yellow"/"gray"
 
 function submitGuess() {
   if (currentCol !== 5) {
-    alert("Not enough letters");
+    showMessage("Not enough letters");
     return;
   }
 
@@ -129,9 +130,15 @@ function submitGuess() {
 
   // Check word validity
   if (!VALID_WORDS.includes(guess.toLowerCase())) {
-    console.log(guess)
-    console.log(VALID_WORDS)
-    alert("Not a valid English word!");
+    const currentRowEl = document.querySelector(`.board-row[data-row="${currentRow}"]`);
+    console.log("row no.", currentRow)
+    if (currentRowEl) {
+      currentRowEl.classList.add('shake');
+      setTimeout(() => {
+        currentRowEl.classList.remove('shake');
+      }, 500); // match the animation duration
+    }
+    showMessage("Not a valid English word!");
     return;
   }
 
@@ -165,7 +172,7 @@ function submitGuess() {
   }
 
   if (guess === targetWord) {
-    setTimeout(() => alert("🎉 Correct!"), 100);
+    setTimeout(() => showMessageCorrect("🎉 Correct!"), 100);
     showResults(true, currentRow + 1)
     return;
   }
@@ -175,7 +182,7 @@ function submitGuess() {
   currentGuess = ["", "", "", "", ""];
 
   if (currentRow === 6) {
-    setTimeout(() => alert(`💀 Game over! Word was ${targetWord}`), 100);
+    setTimeout(() => showMessageEnd(`💀 Game over! Word was ${targetWord}`), 100);
     showResults(false)
   }
 }
@@ -214,8 +221,45 @@ function showResults(won, attemptsUsed) {
 
   // Copy to clipboard
   navigator.clipboard.writeText(shareText)
-    .then(() => alert("Copied results to clipboard!"))
-    .catch(() => alert("Could not copy to clipboard."));
+    .then(() => showMessageCopy("Copied results to clipboard!"))
+    .catch(() => showMessageCopy("Could not copy to clipboard."));
+}
+
+function showMessage(text) {
+  const msg = document.getElementById("message");
+  msg.textContent = text;
+  msg.classList.add("show");
+
+  // Hide after 2 seconds
+  setTimeout(() => {
+    msg.classList.remove("show");
+  }, 2000);
+}
+
+function showMessageEnd(text) {
+  const msg = document.getElementById("message-end");
+  msg.textContent = text;
+  msg.classList.add("show");
+}
+
+function showMessageCorrect(text) {
+  const msg = document.getElementById("message-correct");
+  msg.textContent = text;
+  msg.classList.add("show");
+
+  setTimeout(() => {
+    msg.classList.remove("show");
+  }, 2000);
+}
+
+function showMessageCopy(text) {
+  const msg = document.getElementById("message-copy");
+  msg.textContent = text;
+  msg.classList.add("show");
+
+  setTimeout(() => {
+    msg.classList.remove("show");
+  }, 2000);
 }
 
 createBoard();
