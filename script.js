@@ -86,25 +86,6 @@ function deleteLetter() {
   }
 }
 
-function submitGuess() {
-  if (currentCol !== 5) {
-    alert("Not enough letters");
-    return;
-  }
-
-  const guess = currentGuess.join("");
-  console.log("Submitted Guess:", guess); // Replace with your real logic
-
-  // Move to next row
-  currentRow++;
-  currentCol = 0;
-  currentGuess = ["", "", "", "", ""];
-
-  if (currentRow === 6) {
-    alert("Game over!");
-  }
-}
-
 let targetWord = "";
 
 function getWordOfTheDay(wordList) {
@@ -124,6 +105,12 @@ fetch("five_letter_words.json")
     console.log("Today's word is:", targetWord); // Remove in production
   });
 
+fetch("five_letter_words.json")
+  .then(res => res.json())
+  .then(data => {
+    VALID_WORDS = Object.values(data); // Convert to array
+  });
+
 const guessFeedbackHistory = []; // array of arrays of "green"/"yellow"/"gray"
 
 function submitGuess() {
@@ -139,6 +126,14 @@ function submitGuess() {
   const letterCount = {}; // For counting letters in target
   guessFeedbackHistory.push(colors); // colors = ['gray', 'green', ...]
   console.log(guessFeedbackHistory, "okay1")
+
+  // Check word validity
+  if (!VALID_WORDS.includes(guess.toLowerCase())) {
+    console.log(guess)
+    console.log(VALID_WORDS)
+    alert("Not a valid English word!");
+    return;
+  }
 
   // Count letters in target
   for (let letter of targetArray) {
