@@ -1,5 +1,6 @@
 const board = document.getElementById("board");
 const keyboard = document.getElementById("keyboard");
+console.log("Version 1.4")
 
 // Build 6 rows × 5 columns
 function createBoard() {
@@ -23,20 +24,51 @@ const keys = [
   ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "⌫"],
 ];
 
+
 function createKeyboard() {
+  const keyboardContainer = document.querySelector('.keyboard');
+  console.log(keyboardContainer)
   keys.forEach(row => {
     const rowEl = document.createElement("div");
-    rowEl.className = "key-row";
+    rowEl.classList.add("keyboard-row");
+
     row.forEach(key => {
       const keyEl = document.createElement("button");
       keyEl.textContent = key;
-      keyEl.className = "key";
+      keyEl.setAttribute("data-key", key);
+      keyEl.classList.add("key");
       if (key === "ENTER" || key === "⌫") keyEl.classList.add("special");
       keyEl.addEventListener("click", () => handleKeyClick(key));
       rowEl.appendChild(keyEl);
     });
     keyboard.appendChild(rowEl);
   });
+}
+
+function updateTileAndKeyboard(letter, color) {
+  const keyButton = document.querySelector(`.key[data-key="${letter.toUpperCase()}"]`);
+  console.log(keyButton)
+
+  if (!keyButton){
+    console.log("browhat")  
+    return;
+  }
+  console.log("ee noluo")
+
+  const existingColor = keyButton.getAttribute("data-color");
+
+  const priority = {
+    green: 3,
+    yellow: 2,
+    gray: 1,
+    '': 0
+  };
+
+  if (!existingColor || priority[color] > priority[existingColor]) {
+    keyButton.classList.remove("green", "yellow", "gray"); // Clean old class
+    keyButton.classList.add(color); // Add new one
+    keyButton.setAttribute("data-color", color);
+  }
 }
 
 function handleKeyClick(key) {
@@ -152,6 +184,7 @@ function submitGuess() {
     if (guessArray[i] === targetArray[i]) {
       colors[i] = "green";
       letterCount[guessArray[i]]--;
+      updateTileAndKeyboard(guessArray[i], colors[i]); 
     }
   }
 
@@ -160,6 +193,16 @@ function submitGuess() {
     if (colors[i] !== "green" && letterCount[guessArray[i]] > 0) {
       colors[i] = "yellow";
       letterCount[guessArray[i]]--;
+      updateTileAndKeyboard(guessArray[i], colors[i]); 
+    }
+  }
+
+  // Pass 2: mark yellows
+  for (let i = 0; i < 5; i++) {
+    if (colors[i] !== "green" && colors[i] !== "yellow") {
+      colors[i] = "gray";
+      letterCount[guessArray[i]]--;
+      updateTileAndKeyboard(guessArray[i], colors[i]);
     }
   }
 
