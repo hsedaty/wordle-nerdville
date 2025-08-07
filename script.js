@@ -202,8 +202,11 @@ function getEmojiGrid(feedbackList) {
 
 function showResults(won, attemptsUsed) {
     console.log("AAAA")
+  const startDate = new Date("2025-08-05");
+  const today = new Date();
+  const daysSince = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
   const emojiGrid = getEmojiGrid(guessFeedbackHistory);
-  const totalWordles = 1509; // You can calculate from your start date if needed
+  const totalWordles = daysSince; // You can calculate from your start date if needed
   const scoreLine = `Wordle NerdVille© ${totalWordles} ${won ? attemptsUsed : "X"}/6`;
 
   const shareText = `${scoreLine}\n\n${emojiGrid}`;
