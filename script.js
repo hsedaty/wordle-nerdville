@@ -157,13 +157,12 @@ function submitGuess() {
   const guessArray = currentGuess.map(l => l.toUpperCase());
   const colors = ["gray", "gray", "gray", "gray", "gray"];
   const letterCount = {}; // For counting letters in target
-  guessFeedbackHistory.push(colors); // colors = ['gray', 'green', ...]
-  console.log(guessFeedbackHistory, "okay1")
 
   // Check word validity
   if (!VALID_WORDS.includes(guess.toLowerCase())) {
     const currentRowEl = document.querySelector(`.board-row[data-row="${currentRow}"]`);
     console.log("row no.", currentRow)
+
     if (currentRowEl) {
       currentRowEl.classList.add('shake');
       setTimeout(() => {
@@ -173,6 +172,9 @@ function submitGuess() {
     showMessage("Not a valid English word!");
     return;
   }
+
+  guessFeedbackHistory.push(colors); // colors = ['gray', 'green', ...]
+  console.log(guessFeedbackHistory, "okay1")
 
   // Count letters in target
   for (let letter of targetArray) {
@@ -197,9 +199,9 @@ function submitGuess() {
     }
   }
 
-  // Pass 2: mark yellows
+  // Pass 3: mark grays (keyboard)
   for (let i = 0; i < 5; i++) {
-    if (colors[i] !== "green" && colors[i] !== "yellow") {
+    if (colors[i] !== "green" && colors[i] !== "yellow" && VALID_WORDS.includes(guess.toLowerCase())) {
       colors[i] = "gray";
       letterCount[guessArray[i]]--;
       updateTileAndKeyboard(guessArray[i], colors[i]);
