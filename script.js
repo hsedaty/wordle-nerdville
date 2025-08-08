@@ -1,6 +1,6 @@
 const board = document.getElementById("board");
 const keyboard = document.getElementById("keyboard");
-console.log("Version 1.4")
+console.log("Version 1.5")
 
 // Build 6 rows × 5 columns
 function createBoard() {
@@ -122,9 +122,19 @@ function deleteLetter() {
 let targetWord = "";
 
 function getWordOfTheDay(wordList) {
-  const startDate = new Date("2025-08-06");
-  const today = new Date();
-  const daysSince = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+  const startDate = new Date(Date.UTC(2025, 7, 5)); // Jan 1, 2023 UTC
+
+  const now = new Date();
+
+  // Convert current UTC time to EET (UTC+2)
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const eetOffset = 2 * 60 * 60 * 1000;
+  const eetTime = new Date(utc + eetOffset);
+
+  // Strip time to midnight EET
+  eetTime.setHours(0, 0, 0, 0);
+
+  const daysSince = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
   const index = daysSince % wordList.length;
   console.log("Day index:", daysSince);
   return wordList[index].toUpperCase();
@@ -254,9 +264,19 @@ function getEmojiGrid(feedbackList) {
 
 function showResults(won, attemptsUsed) {
     console.log("AAAA")
-  const startDate = new Date("2025-08-05");
-  const today = new Date();
-  const daysSince = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+  const startDate = new Date(Date.UTC(2025, 7, 5)); // Jan 1, 2023 UTC
+
+  const now = new Date();
+
+  // Convert current UTC time to EET (UTC+2)
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const eetOffset = 2 * 60 * 60 * 1000;
+  const eetTime = new Date(utc + eetOffset);
+
+  // Strip time to midnight EET
+  eetTime.setHours(0, 0, 0, 0);
+
+  const daysSince = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
   const emojiGrid = getEmojiGrid(guessFeedbackHistory);
   const totalWordles = daysSince; // You can calculate from your start date if needed
   const scoreLine = `Wordle NerdVille© ${totalWordles} ${won ? attemptsUsed : "X"}/6`;
